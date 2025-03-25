@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>AuthMicroservice</RootNamespace>
       <UserSecretsId>3a8d87f5-6d1a-4f61-ae65-95a87e577a95</UserSecretsId>
+      <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
     <ItemGroup>
@@ -25,6 +26,12 @@
     <ItemGroup>
       <ProjectReference Include="..\AuthMicroservice.BusinessLogic\AuthMicroservice.BusinessLogic.csproj" />
       <ProjectReference Include="..\AuthMicroservice.Shared\AuthMicroservice.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>
