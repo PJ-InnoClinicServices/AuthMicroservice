@@ -33,7 +33,7 @@ namespace AuthMicroservice.DataAccess.Repositories
             return await signInManager.PasswordSignInAsync(user, password, isPersistent, lockoutOnFailure);
         }
         
-        public async Task<UserEntity> FindByIdAsync(string userId) // Nowa metoda
+        public async Task<UserEntity> FindByIdAsync(string userId) 
         {
             return await userManager.Users.FirstOrDefaultAsync(x => x.Id == userId);
         }
