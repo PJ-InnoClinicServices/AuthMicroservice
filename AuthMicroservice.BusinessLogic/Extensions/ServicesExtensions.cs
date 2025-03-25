@@ -1,4 +1,5 @@
 ﻿using AuthMicroservice.BusinessLogic.Interfaces;
+using AuthMicroservice.BusinessLogic.Interfaces.IServices;
 using AuthMicroservice.BusinessLogic.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,6 +10,7 @@ namespace AuthMicroservice.BusinessLogic.Extensions;
         public static void AddServices(this IServiceCollection services)
         {
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
         }
     
 }
