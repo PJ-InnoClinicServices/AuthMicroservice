@@ -16,8 +16,8 @@ namespace AuthMicroservice.BusinessLogic.Services
             var result = await userRepository.CheckPasswordSignInAsync(user, password, false);
             if (!result.Succeeded) throw new UnauthorizedAccessException("Email not found and/or password incorrect");
 
-            var accessToken = await tokenService.CreateAccessToken(user); // Użyj await
-            var refreshToken = await tokenService.CreateRefreshToken(); // Użyj await
+            var accessToken = await tokenService.CreateAccessToken(user); 
+            var refreshToken = await tokenService.CreateRefreshToken(); 
 
             user.RefreshTokenHash = await tokenService.HashToken(refreshToken);
             user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
@@ -28,7 +28,7 @@ namespace AuthMicroservice.BusinessLogic.Services
 
         public async Task RegisterAsync(RegisterDto registerDto)
         {
-            var refreshToken = await tokenService.CreateRefreshToken(); // Użyj await
+            var refreshToken = await tokenService.CreateRefreshToken(); 
             var user = new UserEntity
             {
                 UserName = registerDto.Email.Split('@')[0],

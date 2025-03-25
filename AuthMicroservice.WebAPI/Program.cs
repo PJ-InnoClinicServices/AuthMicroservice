@@ -8,7 +8,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddRepositories();
 
 builder.Services.AddSwagger();
-builder.Services.AddCorsPolicy();
+builder.Services.AddCorsPolicy(builder.Configuration);
 builder.Services.AddIdentityServices();
 builder.Services.AddAuthenticationServices(builder.Configuration);
 builder.Services.AddDbContextService(builder.Configuration);

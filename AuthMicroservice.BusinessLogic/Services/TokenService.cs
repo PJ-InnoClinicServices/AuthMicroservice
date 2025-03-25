@@ -39,14 +39,14 @@ namespace AuthMicroservice.BusinessLogic.Services;
             var randomBytes = new byte[64];
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(randomBytes);
-            return await Task.FromResult(Convert.ToBase64String(randomBytes)); // Task.FromResult
+            return await Task.FromResult(Convert.ToBase64String(randomBytes)); 
         }
 
         public async Task<string> HashToken(string token)
         {
             using var sha256 = SHA256.Create();
             var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(token));
-            return await Task.FromResult(Convert.ToBase64String(hashedBytes)); // Task.FromResult
+            return await Task.FromResult(Convert.ToBase64String(hashedBytes)); 
         }
 
         public async Task<bool> ValidateAccessToken(string token)

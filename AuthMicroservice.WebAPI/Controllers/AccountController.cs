@@ -1,8 +1,6 @@
 using System.Security.Claims;
-using AuthMicroservice.BusinessLogic.Interfaces;
 using AuthMicroservice.BusinessLogic.Interfaces.IServices;
 using AuthMicroservice.Shared.Dtos.Account;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using IAuthenticationService = AuthMicroservice.BusinessLogic.Interfaces.IServices.IAuthenticationService;
