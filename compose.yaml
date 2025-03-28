@@ -1,0 +1,23 @@
+﻿services:
+  authmicroservice.webapi:
+    image: authmicroservice.webapi
+    build:
+      context: .
+      dockerfile: AuthMicroservice.WebAPI/Dockerfile
+    ports:
+      - 8084:8080
+  
+  database:
+    image: postgres:latest
+    container_name: database
+    environment:
+      - POSTGRES_DB=usersdb2
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+volumes:
+  db_data:
