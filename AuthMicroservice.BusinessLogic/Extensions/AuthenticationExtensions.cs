@@ -27,7 +27,7 @@ namespace AuthMicroservice.BusinessLogic.Extensions;
                     ValidAudience = configuration["JWT:Audience"],
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        System.Text.Encoding.UTF8.GetBytes(configuration["JWT:SigningKey"])
+                        System.Text.Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SigningKey"))
                     )
                 };
             });
