@@ -7,6 +7,6 @@
     ports:
       - 8084:8080
     environment:
-      - ASPNETCORE_ENVIRONMENT=Container
-      - JWT_SigningKey=b1n7zF2vR9cXq3pWm4YdT6KjN0L5sV8oA7B9eU2GxMZQCHJPKDLYWFTRXVOEIUAGb1n7zF2vR9cXq3pWm4YdT6KjN0L5sV8oA7B9eU2GxMZQCHJPKDLYWFTRXVOEIUAG
-      - NEON_DB_PASSWORD=npg_m1SlfWprV8gv
+      - ASPNETCORE_ENVIRONMENT= env
+      - JWT_SigningKey= key
+      - NEON_DB_PASSWORD= password
