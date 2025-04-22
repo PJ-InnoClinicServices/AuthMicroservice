@@ -1,6 +1,6 @@
 ﻿services:
   authmicroservice.webapi:
-    image: authmicroservice.webapi
+    image: auth-microservice.webapi
     build:
       context: .
       dockerfile: AuthMicroservice.WebAPI/Dockerfile
@@ -9,3 +9,4 @@
     environment:
       - ASPNETCORE_ENVIRONMENT=Container
       - JWT_SigningKey=b1n7zF2vR9cXq3pWm4YdT6KjN0L5sV8oA7B9eU2GxMZQCHJPKDLYWFTRXVOEIUAGb1n7zF2vR9cXq3pWm4YdT6KjN0L5sV8oA7B9eU2GxMZQCHJPKDLYWFTRXVOEIUAG
+      - NEON_DB_PASSWORD=npg_m1SlfWprV8gv
