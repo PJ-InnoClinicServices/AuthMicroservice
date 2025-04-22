@@ -10,6 +10,9 @@ namespace AuthMicroservice.BusinessLogic.Extensions;
         public static void AddDbContextService(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<AppDbContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("UsersDb")));
+                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"), npgsqlOptions =>
+                {
+                    npgsqlOptions.MigrationsHistoryTable("__EFMigrationsHistory_Auth");
+                }));
         }
     }

@@ -19,10 +19,10 @@ namespace AuthMicroservice.BusinessLogic.Services;
                 new Claim(JwtRegisteredClaimNames.Email, userEntity.Email),
                 new Claim(JwtRegisteredClaimNames.UniqueName, userEntity.UserName)
             };
-
+        
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:SigningKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
-
+        
             var token = new JwtSecurityToken(
                 issuer: config["Jwt:Issuer"],
                 audience: config["Jwt:Audience"],
@@ -30,10 +30,10 @@ namespace AuthMicroservice.BusinessLogic.Services;
                 expires: DateTime.UtcNow.AddMinutes(1), 
                 signingCredentials: creds
             );
-
+        
             return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token)); 
         }
-
+        
         public async Task<string> CreateRefreshToken()
         {
             var randomBytes = new byte[64];
@@ -41,14 +41,14 @@ namespace AuthMicroservice.BusinessLogic.Services;
             rng.GetBytes(randomBytes);
             return await Task.FromResult(Convert.ToBase64String(randomBytes)); 
         }
-
+        
         public async Task<string> HashToken(string token)
         {
             using var sha256 = SHA256.Create();
             var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(token));
             return await Task.FromResult(Convert.ToBase64String(hashedBytes)); 
         }
-
+        
         public async Task<bool> ValidateAccessToken(string token)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:SigningKey"]));
@@ -64,7 +64,7 @@ namespace AuthMicroservice.BusinessLogic.Services;
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             };
-
+        
             try
             {
                 var principal = tokenHandler.ValidateToken(token, validationParameters, out _);
@@ -75,7 +75,7 @@ namespace AuthMicroservice.BusinessLogic.Services;
                 return await Task.FromResult(false);
             }
         }
-
+        
         public async Task<(string AccessToken, string newRefreshToken)> RefreshAccessTokenAsync(string refreshToken)
         {
             var hashedToken = await HashToken(refreshToken);
@@ -93,7 +93,7 @@ namespace AuthMicroservice.BusinessLogic.Services;
             user.RefreshTokenHash = newRefreshTokenHash;
             user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
             await tokenRepository.UpdateAsync(user);
-
+        
             return (newAccessToken, newRefreshToken);
         }
     }
