@@ -1,6 +1,6 @@
 ﻿services:
   authmicroservice.webapi:
-    image: auth-microservice.webapi
+    image: auth-microservice
     build:
       context: .
       dockerfile: AuthMicroservice.WebAPI/Dockerfile
