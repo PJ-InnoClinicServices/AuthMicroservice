@@ -33,7 +33,7 @@ public class AccountController(IAuthenticationService authenticationService, ITo
         });
         
         return Ok(new { AccessToken = accessToken });
-      //  return null;
+
     }
 
     [HttpPost("register")]
@@ -51,7 +51,7 @@ public class AccountController(IAuthenticationService authenticationService, ITo
         {
             return BadRequest(new { message = ex.Message });
         }
-    //    return null;
+
     }
 
     [HttpPost("refresh")]
@@ -71,7 +71,7 @@ public class AccountController(IAuthenticationService authenticationService, ITo
         });
         
         return Ok(new { AccessToken = accessToken });
-      //  return null;
+
     }
 
 
@@ -79,22 +79,22 @@ public class AccountController(IAuthenticationService authenticationService, ITo
     [Authorize]
     public async Task<IActionResult> GetCurrentUser()
     {
-        // var claims = User.Claims.ToList();
-        // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //
-        // if (userId == null)
-        //     return Unauthorized(new { message = "No ID in the token." });
-        //
-        // var user = await authenticationService.GetUserByIdAsync(userId);
-        // if (user == null)
-        //     return NotFound(new { message = "User not found." });
-        //
-        // return Ok(new
-        // {
-        //     Id = user.Id,
-        //     UserName = user.UserName,
-        //     Email = user.Email
-        // });
-        return null;
+        var claims = User.Claims.ToList();
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        
+        if (userId == null)
+            return Unauthorized(new { message = "No ID in the token." });
+        
+        var user = await authenticationService.GetUserByIdAsync(userId);
+        if (user == null)
+            return NotFound(new { message = "User not found." });
+        
+        return Ok(new
+        {
+            Id = user.Id,
+            UserName = user.UserName,
+            Email = user.Email
+        });
+    
     }
 }
