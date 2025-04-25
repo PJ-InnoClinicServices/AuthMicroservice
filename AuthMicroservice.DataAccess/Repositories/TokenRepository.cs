@@ -17,12 +17,12 @@ public class TokenRepository(UserManager<UserEntity> userManager, IConfiguration
     {
         return await userManager.Users.FirstOrDefaultAsync(x => x.RefreshTokenHash == refreshTokenHash);
     }
-
+    
     public async Task<IdentityResult> UpdateAsync(UserEntity user)
     {
         return await userManager.UpdateAsync(user);
     }
-
+    
     public async Task<string> CreateAccessToken(UserEntity userEntity)
     {
         var claims = new List<Claim>
@@ -31,10 +31,10 @@ public class TokenRepository(UserManager<UserEntity> userManager, IConfiguration
             new Claim(JwtRegisteredClaimNames.Email, userEntity.Email),
             new Claim(JwtRegisteredClaimNames.UniqueName, userEntity.UserName)
         };
-
+    
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:SigningKey"]));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
-
+    
         var token = new JwtSecurityToken(
             issuer: config["Jwt:Issuer"],
             audience: config["Jwt:Audience"],
@@ -42,10 +42,10 @@ public class TokenRepository(UserManager<UserEntity> userManager, IConfiguration
             expires: DateTime.UtcNow.AddMinutes(1), 
             signingCredentials: creds
         );
-
+    
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
-
+    
     public async Task<string> CreateRefreshToken()
     {
         var randomBytes = new byte[64];
@@ -53,7 +53,7 @@ public class TokenRepository(UserManager<UserEntity> userManager, IConfiguration
         rng.GetBytes(randomBytes);
         return Convert.ToBase64String(randomBytes); 
     }
-
+    
     public async Task<string> HashToken(string token)
     {
         using var sha256 = SHA256.Create();

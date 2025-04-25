@@ -17,13 +17,13 @@ public class AccountController(IAuthenticationService authenticationService, ITo
     {
         if (!ModelState.IsValid)
             return BadRequest(new { message = "Invalid request data.", errors = ModelState });
-
+        
         var (accessToken, refreshToken) = await authenticationService.LoginAsync(loginDto.Email, loginDto.Password);
         if (accessToken == null)
         {
             return Unauthorized(new { message = "Invalid email or password." });
         }
-
+        
         Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
         {
             HttpOnly = true,
@@ -31,8 +31,9 @@ public class AccountController(IAuthenticationService authenticationService, ITo
             SameSite = SameSiteMode.None,
             Expires = DateTime.UtcNow.AddDays(7)
         });
-
+        
         return Ok(new { AccessToken = accessToken });
+
     }
 
     [HttpPost("register")]
@@ -40,7 +41,7 @@ public class AccountController(IAuthenticationService authenticationService, ITo
     {
         if (!ModelState.IsValid)
             return BadRequest(new { message = "Invalid registration data.", errors = ModelState });
-
+        
         try
         {
             await authenticationService.RegisterAsync(registerDto);
@@ -50,6 +51,7 @@ public class AccountController(IAuthenticationService authenticationService, ITo
         {
             return BadRequest(new { message = ex.Message });
         }
+
     }
 
     [HttpPost("refresh")]
@@ -67,8 +69,9 @@ public class AccountController(IAuthenticationService authenticationService, ITo
             SameSite = SameSiteMode.None,
             Expires = DateTime.UtcNow.AddDays(7)
         });
-
+        
         return Ok(new { AccessToken = accessToken });
+
     }
 
 
@@ -81,16 +84,17 @@ public class AccountController(IAuthenticationService authenticationService, ITo
         
         if (userId == null)
             return Unauthorized(new { message = "No ID in the token." });
-
+        
         var user = await authenticationService.GetUserByIdAsync(userId);
         if (user == null)
             return NotFound(new { message = "User not found." });
-
+        
         return Ok(new
         {
             Id = user.Id,
             UserName = user.UserName,
             Email = user.Email
         });
+    
     }
 }

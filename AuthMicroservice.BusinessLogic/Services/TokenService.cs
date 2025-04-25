@@ -20,18 +20,42 @@ namespace AuthMicroservice.BusinessLogic.Services;
                 new Claim(JwtRegisteredClaimNames.UniqueName, userEntity.UserName)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:SigningKey"]));
+            string signingKey;
+            string issuer;
+            string audience;
+
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Container")
+            {
+                signingKey = Environment.GetEnvironmentVariable("JWT_SigningKey");
+                issuer = Environment.GetEnvironmentVariable("JWT_AUTHORITY");
+                audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
+            }
+            else
+            {
+                signingKey = config["Jwt:SigningKey"];
+                issuer = config["Jwt:Issuer"];
+                audience = config["Jwt:Audience"];
+            }
+
+            if (string.IsNullOrWhiteSpace(signingKey))
+                throw new InvalidOperationException("JWT_SigningKey is missing.");
+            if (string.IsNullOrWhiteSpace(issuer))
+                throw new InvalidOperationException("JWT_AUTHORITY is missing.");
+            if (string.IsNullOrWhiteSpace(audience))
+                throw new InvalidOperationException("JWT_AUDIENCE is missing.");
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
 
             var token = new JwtSecurityToken(
-                issuer: config["Jwt:Issuer"],
-                audience: config["Jwt:Audience"],
+                issuer: issuer,
+                audience: audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(1), 
+                expires: DateTime.UtcNow.AddMinutes(15),
                 signingCredentials: creds
             );
 
-            return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token)); 
+            return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
         }
 
         public async Task<string> CreateRefreshToken()
@@ -41,14 +65,14 @@ namespace AuthMicroservice.BusinessLogic.Services;
             rng.GetBytes(randomBytes);
             return await Task.FromResult(Convert.ToBase64String(randomBytes)); 
         }
-
+        
         public async Task<string> HashToken(string token)
         {
             using var sha256 = SHA256.Create();
             var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(token));
             return await Task.FromResult(Convert.ToBase64String(hashedBytes)); 
         }
-
+        
         public async Task<bool> ValidateAccessToken(string token)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:SigningKey"]));
@@ -64,7 +88,7 @@ namespace AuthMicroservice.BusinessLogic.Services;
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             };
-
+        
             try
             {
                 var principal = tokenHandler.ValidateToken(token, validationParameters, out _);
@@ -75,7 +99,7 @@ namespace AuthMicroservice.BusinessLogic.Services;
                 return await Task.FromResult(false);
             }
         }
-
+        
         public async Task<(string AccessToken, string newRefreshToken)> RefreshAccessTokenAsync(string refreshToken)
         {
             var hashedToken = await HashToken(refreshToken);
@@ -93,7 +117,7 @@ namespace AuthMicroservice.BusinessLogic.Services;
             user.RefreshTokenHash = newRefreshTokenHash;
             user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
             await tokenRepository.UpdateAsync(user);
-
+        
             return (newAccessToken, newRefreshToken);
         }
     }
